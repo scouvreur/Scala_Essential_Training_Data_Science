@@ -1,0 +1,345 @@
+$ spark-shell
+2019-10-09 19:51:22 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://172.20.113.122:4040
+Spark context available as 'sc' (master = local[*], app id = local-1570647089899).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.3.2
+      /_/
+
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_144)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> import scala.util.Random
+import scala.util.Random
+
+scala> val bigRng = scala.util.Random.shuffle(1 to 100000)
+bigRng: scala.collection.immutable.IndexedSeq[Int] = Vector(88786, 94686, 1213, 73458, 48126, 95706, 25061, 82082, 42967, 22175, 10405, 85167, 80233, 25454, 99116, 49727, 69609, 50580, 5701, 48222, 41636, 53849, 44361, 52503, 70935, 31452, 88808, 29030, 58738, 56841, 2610, 88037, 18727, 83689, 86066, 37020, 75467, 14975, 43622, 60885, 37101, 30652, 31318, 76985, 4351, 47087, 73977, 10035, 8495, 26089, 91142, 32828, 4098, 28471, 19669, 76230, 39270, 92683, 9814, 25028, 33710, 43004, 44042, 12273, 97489, 95353, 86885, 1454, 46673, 62280, 84882, 91555, 92716, 11954, 24702, 74064, 91979, 76466, 92609, 44566, 25989, 33756, 93473, 13367, 72306, 70716, 63821, 33484, 95783, 94619, 80309, 48418, 48446, 95375, 35929, 53752, 43646, 99042, 73688, 43319, 96547, 64786, 91014, 99462, 66327, 68257, 155...
+scala> val bigRDD = sc.parallelize(bigRng)
+bigRDD: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[0] at parallelize at <console>:27
+
+scala> bigR
+bigRDD   bigRng
+
+scala> bigRDD.
+++             countApproxDistinct     getCheckpointFile   mapPartitions            productArity       sparkContext    toLocalIterator
+aggregate      countAsync              getNumPartitions    mapPartitionsWithIndex   productElement     stats           toString
+cache          countByValue            getStorageLevel     max                      productIterator    stdev           top
+canEqual       countByValueApprox      glom                mean                     productPrefix      subtract        treeAggregate
+cartesian      dependencies            groupBy             meanApprox               randomSplit        sum             treeReduce
+checkpoint     distinct                histogram           min                      reduce             sumApprox       union
+coalesce       filter                  id                  name                     repartition        take            unpersist
+collect        first                   intersection        partitioner              sample             takeAsync       variance
+collectAsync   flatMap                 isCheckpointed      partitions               sampleStdev        takeOrdered     zip
+compute        fold                    isEmpty             persist                  sampleVariance     takeSample      zipPartitions
+context        foreach                 iterator            pipe                     saveAsObjectFile   toDF            zipWithIndex
+copy           foreachAsync            keyBy               popStdev                 saveAsTextFile     toDS            zipWithUniqueId
+count          foreachPartition        localCheckpoint     popVariance              setName            toDebugString
+countApprox    foreachPartitionAsync   map                 preferredLocations       sortBy             toJavaRDD
+
+scala> bigRDD.mean
+[Stage 0:>                                                          (0 + 0) / 4]2019-10-09 19:53:30 WARN  TaskSetManager:66 - Stage 0 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res0: Double = 50000.50000000002
+
+scala> bigRDD.min
+2019-10-09 19:53:39 WARN  TaskSetManager:66 - Stage 1 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res1: Int = 1
+
+scala> bigRDD.max
+2019-10-09 19:53:43 WARN  TaskSetManager:66 - Stage 2 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res2: Int = 100000
+
+scala> bigRDD.popStdev
+2019-10-09 19:54:08 WARN  TaskSetManager:66 - Stage 3 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res3: Double = 28867.513458037956
+
+scala> bigRDD.take(25)
+2019-10-09 19:56:27 WARN  TaskSetManager:66 - Stage 4 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res4: Array[Int] = Array(88786, 94686, 1213, 73458, 48126, 95706, 25061, 82082, 42967, 22175, 10405, 85167, 80233, 25454, 99116, 49727, 69609, 50580, 5701, 48222, 41636, 53849, 44361, 52503, 70935)
+
+scala> val bigRDD2 = bigRDD.map(_ * 2)
+bigRDD2: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[5] at map at <console>:26
+
+scala> bigRDD2.take(25)
+2019-10-09 19:57:13 WARN  TaskSetManager:66 - Stage 5 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res5: Array[Int] = Array(177572, 189372, 2426, 146916, 96252, 191412, 50122, 164164, 85934, 44350, 20810, 170334, 160466, 50908, 198232, 99454, 139218, 101160, 11402, 96444, 83272, 107698, 88722, 105006, 141870)
+
+scala> bigRDD2.mean
+2019-10-09 19:57:32 WARN  TaskSetManager:66 - Stage 6 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res6: Double = 100001.00000000004
+
+scala> bigRDD2.popStdev
+2019-10-09 19:57:37 WARN  TaskSetManager:66 - Stage 7 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res7: Double = 57735.02691607591
+
+scala> def div3(x: Int) : Boolean = {val y:Int=(x%3); return(y==0)}
+div3: (x: Int)Boolean
+
+scala> div3(2)
+res8: Boolean = false
+
+scala> div3(9)
+res9: Boolean = true
+
+scala> val bigBool = bigRDD2.map(div3(_))
+bigBool: org.apache.spark.rdd.RDD[Boolean] = MapPartitionsRDD[10] at map at <console>:28
+
+scala> val bigBoolRDD = bigRDD2.map(div3(_))
+bigBoolRDD: org.apache.spark.rdd.RDD[Boolean] = MapPartitionsRDD[11] at map at <console>:28
+
+scala> bigBoolRDD.take(25)
+2019-10-09 19:59:43 WARN  TaskSetManager:66 - Stage 8 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res10: Array[Boolean] = Array(false, true, false, true, true, true, false, false, false, false, false, true, false, false, false, false, true, true, false, true, false, false, true, true, true)
+
+scala> val republic = sc.textFile("The Republic, by Plato")
+republic: org.apache.spark.rdd.RDD[String] = The Republic, by Plato MapPartitionsRDD[13] at textFile at <console>:25
+
+scala> val republic = sc.textFile("The_Republic_by_Plato.txt")
+republic: org.apache.spark.rdd.RDD[String] = The_Republic_by_Plato.txt MapPartitionsRDD[15] at textFile at <console>:25
+
+scala> val republic : RDD[String] = sc.textFile("The_Republic_by_Plato.txt")
+<console>:25: error: not found: type RDD
+       val republic : RDD[String] = sc.textFile("The_Republic_by_Plato.txt")
+                      ^
+
+scala> val republic = sc.textFile("The_Republic_by_Plato.txt")
+republic: org.apache.spark.rdd.RDD[String] = The_Republic_by_Plato.txt MapPartitionsRDD[17] at textFile at <console>:25
+
+scala> republic.take(25)
+org.apache.hadoop.mapred.InvalidInputException: Input path does not exist: file:/Users/stephane.couvreur/Documents/eLearning/The_Republic_by_Plato.txt
+  at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:287)
+  at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:229)
+  at org.apache.hadoop.mapred.FileInputFormat.getSplits(FileInputFormat.java:315)
+  at org.apache.spark.rdd.HadoopRDD.getPartitions(HadoopRDD.scala:200)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:253)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:251)
+  at scala.Option.getOrElse(Option.scala:121)
+  at org.apache.spark.rdd.RDD.partitions(RDD.scala:251)
+  at org.apache.spark.rdd.MapPartitionsRDD.getPartitions(MapPartitionsRDD.scala:46)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:253)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:251)
+  at scala.Option.getOrElse(Option.scala:121)
+  at org.apache.spark.rdd.RDD.partitions(RDD.scala:251)
+  at org.apache.spark.rdd.RDD$$anonfun$take$1.apply(RDD.scala:1343)
+  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)
+  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:112)
+  at org.apache.spark.rdd.RDD.withScope(RDD.scala:363)
+  at org.apache.spark.rdd.RDD.take(RDD.scala:1337)
+  ... 49 elided
+
+scala> republic.take(25)
+org.apache.hadoop.mapred.InvalidInputException: Input path does not exist: file:/Users/stephane.couvreur/Documents/eLearning/The_Republic_by_Plato.txt
+  at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:287)
+  at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:229)
+  at org.apache.hadoop.mapred.FileInputFormat.getSplits(FileInputFormat.java:315)
+  at org.apache.spark.rdd.HadoopRDD.getPartitions(HadoopRDD.scala:200)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:253)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:251)
+  at scala.Option.getOrElse(Option.scala:121)
+  at org.apache.spark.rdd.RDD.partitions(RDD.scala:251)
+  at org.apache.spark.rdd.MapPartitionsRDD.getPartitions(MapPartitionsRDD.scala:46)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:253)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:251)
+  at scala.Option.getOrElse(Option.scala:121)
+  at org.apache.spark.rdd.RDD.partitions(RDD.scala:251)
+  at org.apache.spark.rdd.RDD$$anonfun$take$1.apply(RDD.scala:1343)
+  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)
+  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:112)
+  at org.apache.spark.rdd.RDD.withScope(RDD.scala:363)
+  at org.apache.spark.rdd.RDD.take(RDD.scala:1337)
+  ... 49 elided
+
+scala> val republic = sc.textFile("The_Republic_by_Plato.txt")
+republic: org.apache.spark.rdd.RDD[String] = The_Republic_by_Plato.txt MapPartitionsRDD[19] at textFile at <console>:25
+
+scala> republic.take(25)
+org.apache.hadoop.mapred.InvalidInputException: Input path does not exist: file:/Users/stephane.couvreur/Documents/eLearning/The_Republic_by_Plato.txt
+  at org.apache.hadoop.mapred.FileInputFormat.singleThreadedListStatus(FileInputFormat.java:287)
+  at org.apache.hadoop.mapred.FileInputFormat.listStatus(FileInputFormat.java:229)
+  at org.apache.hadoop.mapred.FileInputFormat.getSplits(FileInputFormat.java:315)
+  at org.apache.spark.rdd.HadoopRDD.getPartitions(HadoopRDD.scala:200)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:253)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:251)
+  at scala.Option.getOrElse(Option.scala:121)
+  at org.apache.spark.rdd.RDD.partitions(RDD.scala:251)
+  at org.apache.spark.rdd.MapPartitionsRDD.getPartitions(MapPartitionsRDD.scala:46)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:253)
+  at org.apache.spark.rdd.RDD$$anonfun$partitions$2.apply(RDD.scala:251)
+  at scala.Option.getOrElse(Option.scala:121)
+  at org.apache.spark.rdd.RDD.partitions(RDD.scala:251)
+  at org.apache.spark.rdd.RDD$$anonfun$take$1.apply(RDD.scala:1343)
+  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:151)
+  at org.apache.spark.rdd.RDDOperationScope$.withScope(RDDOperationScope.scala:112)
+  at org.apache.spark.rdd.RDD.withScope(RDD.scala:363)
+  at org.apache.spark.rdd.RDD.take(RDD.scala:1337)
+  ... 49 elided
+
+scala> val republic = sc.textFile("Scala_Essential_Training_Data_Science/The_Republic_by_Plato.txt")
+republic: org.apache.spark.rdd.RDD[String] = Scala_Essential_Training_Data_Science/The_Republic_by_Plato.txt MapPartitionsRDD[21] at textFile at <console>:25
+
+scala> republic.take(25)
+res14: Array[String] = Array(The Project Gutenberg EBook of The Republic, by Plato, "", This eBook is for the use of anyone anywhere at no cost and with, almost no restrictions whatsoever.  You may copy it, give it away or, re-use it under the terms of the Project Gutenberg License included, with this eBook or online at www.gutenberg.org, "", "", Title: The Republic, "", Author: Plato, "", Translator: B. Jowett, "", Posting Date: August 27, 2008 [EBook #1497], Release Date: October, 1998, Last Updated: June 22, 2016, "", Language: English, "", "", *** START OF THIS PROJECT GUTENBERG EBOOK THE REPUBLIC ***, "", "", "")
+
+scala> republic.take(25).foreach(println)
+The Project Gutenberg EBook of The Republic, by Plato
+
+This eBook is for the use of anyone anywhere at no cost and with
+almost no restrictions whatsoever.  You may copy it, give it away or
+re-use it under the terms of the Project Gutenberg License included
+with this eBook or online at www.gutenberg.org
+
+
+Title: The Republic
+
+Author: Plato
+
+Translator: B. Jowett
+
+Posting Date: August 27, 2008 [EBook #1497]
+Release Date: October, 1998
+Last Updated: June 22, 2016
+
+Language: English
+
+
+*** START OF THIS PROJECT GUTENBERG EBOOK THE REPUBLIC ***
+
+
+
+
+scala> republic
+res16: org.apache.spark.rdd.RDD[String] = Scala_Essential_Training_Data_Science/The_Republic_by_Plato.txt MapPartitionsRDD[21] at textFile at <console>:25
+
+scala> val linesWithSocrates = re
+readBoolean   readDouble   readLine    readf    readf3        reflect          remote     require   res10   res16   res4   res7   reverse
+readByte      readFloat    readLong    readf1   ref           regexp_extract   repeat     res0      res14   res2    res5   res8
+readChar      readInt      readShort   readf2   refArrayOps   regexp_replace   republic   res1      res15   res3    res6   res9
+
+scala> val linesWithSocrates = rep
+repeat   republic
+
+scala> val linesWithSocrates = republic.filter(line => line.contains("Socrates"))
+linesWithSocrates: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[22] at filter at <console>:26
+
+scala> linesWithSocrates.take(10)
+res17: Array[String] = Array(of Socrates and Plato. The principles of definition, the law of, man--then discussed on the basis of proverbial morality by Socrates and, by Socrates--reduced to an abstraction by Glaucon and Adeimantus, and, ideal State which is constructed by Socrates. The first care of the, Thrasymachus, Socrates, Glaucon, and Adeimantus. Cephalus appears in the, The main discussion is carried on by Socrates, Glaucon, and Adeimantus., around the memory of the past. He is eager that Socrates should come, Socrates, whose love of conversation, no less than the mission imposed, youth; he is for detaining Socrates by force in the opening scene,, which he makes are only elicited from him by the dialectic of Socrates.)
+
+scala> linesWithSocrates.take(10).foreach(println)
+of Socrates and Plato. The principles of definition, the law of
+man--then discussed on the basis of proverbial morality by Socrates and
+by Socrates--reduced to an abstraction by Glaucon and Adeimantus, and
+ideal State which is constructed by Socrates. The first care of the
+Thrasymachus, Socrates, Glaucon, and Adeimantus. Cephalus appears in the
+The main discussion is carried on by Socrates, Glaucon, and Adeimantus.
+around the memory of the past. He is eager that Socrates should come
+Socrates, whose love of conversation, no less than the mission imposed
+youth; he is for detaining Socrates by force in the opening scene,
+which he makes are only elicited from him by the dialectic of Socrates.
+
+scala> import org.apache.spark.mllib.stat.Statistics
+import org.apache.spark.mllib.stat.Statistics
+
+scala> bigRDD.take(1)
+2019-10-09 20:09:01 WARN  TaskSetManager:66 - Stage 13 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res19: Array[Int] = Array(88786)
+
+scala> bigRDD2.take(1)
+2019-10-09 20:09:23 WARN  TaskSetManager:66 - Stage 14 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res20: Array[Int] = Array(177572)
+
+scala> val x = bigRDD2.takeSample(true, 1000)
+2019-10-09 20:10:04 WARN  TaskSetManager:66 - Stage 15 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:10:04 WARN  TaskSetManager:66 - Stage 16 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+x: Array[Int] = Array(191762, 159040, 6806, 57406, 646, 115436, 114796, 81066, 43300, 26106, 158478, 68104, 159492, 76362, 76754, 135064, 128490, 179012, 168382, 186894, 107224, 50316, 136932, 152782, 161582, 124232, 45446, 41412, 84142, 152510, 62858, 8854, 67720, 100014, 124016, 149746, 157218, 141548, 128162, 169354, 94372, 192278, 17958, 62448, 144434, 101212, 49120, 55982, 84498, 89616, 166692, 54686, 119190, 182848, 125024, 159610, 91088, 133078, 38558, 9428, 60430, 15584, 86712, 112102, 74196, 90128, 156982, 36048, 66508, 98776, 50950, 36436, 182610, 191058, 64412, 58438, 52482, 191286, 55620, 173584, 94090, 96172, 23676, 168332, 71942, 172714, 42222, 130844, 82680, 46458, 14142, 191734, 152868, 66238, 115372, 196286, 105922, 56682, 92382, 78176, 148226, 113588, 111742, 78316, 15...
+scala> x.length
+res21: Int = 1000
+
+scala> val x = bigRDD2.takeSample(true, 1000)
+2019-10-09 20:10:16 WARN  TaskSetManager:66 - Stage 17 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:10:16 WARN  TaskSetManager:66 - Stage 18 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+x: Array[Int] = Array(114092, 19128, 129764, 173094, 145594, 115976, 105206, 137928, 114618, 181464, 185888, 199734, 52916, 158794, 81518, 15628, 176892, 131060, 151822, 116478, 181778, 179648, 74360, 108390, 64232, 35378, 172102, 161270, 120048, 156754, 122594, 136704, 48606, 54736, 148468, 26348, 54574, 111810, 26678, 83864, 118600, 39458, 189832, 25736, 194462, 158346, 188754, 47694, 83076, 174260, 177208, 173808, 4060, 86130, 125078, 166214, 21058, 159714, 76904, 150910, 63974, 22318, 7078, 83364, 2488, 136832, 140132, 72728, 65838, 76926, 37108, 143946, 180920, 115622, 189206, 158996, 58730, 4714, 23122, 5244, 10416, 54014, 108386, 152814, 85448, 112704, 111012, 85788, 128010, 139628, 93518, 70286, 27858, 65676, 142660, 65800, 199646, 156572, 112382, 176448, 92950, 160512, 43830, 1...
+scala> // ^ different results
+
+scala> val x = bigRDD2.takeSample(true, 1000, val seed = 1234)
+<console>:1: error: illegal start of simple expression
+val x = bigRDD2.takeSample(true, 1000, val seed = 1234)
+                                       ^
+
+scala> val x = bigRDD2.takeSample(true, 1000, seed = 1234)
+2019-10-09 20:10:52 WARN  TaskSetManager:66 - Stage 19 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:10:52 WARN  TaskSetManager:66 - Stage 20 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+x: Array[Int] = Array(86334, 159634, 157232, 190760, 67526, 23998, 112506, 73406, 81194, 149940, 25264, 92496, 160230, 102622, 166686, 94124, 121182, 82222, 182304, 36720, 159694, 137454, 128638, 18262, 62234, 169852, 162600, 195738, 18680, 102066, 2106, 10382, 158074, 119672, 76412, 159766, 113654, 42952, 147546, 122448, 17888, 150252, 110686, 127634, 74510, 20768, 118296, 172128, 14142, 160480, 182226, 133810, 175548, 88376, 38856, 18720, 48720, 90600, 67840, 184828, 37756, 113354, 38416, 124474, 514, 164730, 123524, 83318, 34266, 126852, 57256, 33666, 20720, 114360, 14242, 178780, 69690, 61876, 33010, 27882, 61190, 155032, 13406, 74234, 55964, 38894, 199504, 148472, 61338, 62660, 25674, 21400, 110852, 162006, 186872, 105744, 54724, 4648, 108504, 144992, 196894, 198340, 105532, 184122...
+scala> bigRDD2.mean
+2019-10-09 20:11:25 WARN  TaskSetManager:66 - Stage 21 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res22: Double = 100001.00000000004
+
+scala> bigRDD2.min
+2019-10-09 20:11:31 WARN  TaskSetManager:66 - Stage 22 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res23: Int = 2
+
+scala> bigRDD2.max
+2019-10-09 20:11:32 WARN  TaskSetManager:66 - Stage 23 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res24: Int = 200000
+
+scala> bigRDD2.stat
+<console>:28: error: value stat is not a member of org.apache.spark.rdd.RDD[Int]
+       bigRDD2.stat
+               ^
+
+scala> bigRDD2.stats
+2019-10-09 20:11:52 WARN  TaskSetManager:66 - Stage 24 contains a task of very large size (105 KB). The maximum recommended task size is 100 KB.
+res26: org.apache.spark.util.StatCounter = (count: 100000, mean: 100001.000000, stdev: 57735.026916, max: 200000.000000, min: 2.000000)
+
+scala> val series1 = Array.fill(100000)(Random.nextDouble)
+series1: Array[Double] = Array(0.4822683936881107, 0.19465884292435698, 0.4980893469431814, 0.8057548234357781, 0.2707594326878894, 0.024704572573469252, 0.06747601512791024, 0.2259578226412422, 0.9207850959766096, 0.5654498282148727, 0.828183432406142, 0.3634730762940016, 0.6578427513872103, 0.8968948568291277, 0.30517222409280664, 0.7691801601092677, 0.5439261673774338, 0.8367107960000061, 0.7505525434705976, 0.4160198218123168, 0.1118175738272561, 0.015698902204363208, 0.4294077928198604, 0.10642370730672746, 0.35280443494074387, 0.8309435223462877, 0.9604745206505024, 0.07178456041876113, 0.49217820882569785, 0.837236914876459, 0.6504298051828084, 0.5359699611963181, 0.940972999458209, 0.8180168628585657, 0.7302641039153138, 0.33617203602030243, 0.04775389934945273, 0.98897280802070...
+scala> val series2 = Array.fill(100000)(Random.nextDouble)
+series2: Array[Double] = Array(0.7336342655958076, 0.1624430937236162, 0.797865131397632, 0.08738100549716632, 0.31025334005368177, 0.9223013728413606, 0.6054241808408165, 0.9694309450628126, 0.6459969060884915, 0.4810709558999695, 0.6178465418146618, 0.9755296997629027, 0.9430851989552997, 0.36958559022494064, 0.6908430221436448, 0.34038599207364484, 0.2776143714487166, 0.972726155054852, 0.0497446845215741, 0.4049140259895848, 0.9409178967869128, 0.9448226564622314, 0.5232405347073236, 0.21480233173688257, 0.8133079387672993, 0.9180334836672029, 0.5617078096573096, 0.05843770605179277, 0.11861602616203692, 0.04084200327870957, 0.5179489104512984, 0.31774961288484616, 0.11205389725026949, 0.8144741379012255, 0.8878744317859897, 0.5768297962970761, 0.7392665167602436, 0.1569554404520303...
+scala> val pseries1 = sc.parallelize(series1)
+pseries1: org.apache.spark.rdd.RDD[Double] = ParallelCollectionRDD[30] at parallelize at <console>:28
+
+scala> val pseries2 = sc.parallelize(series2)
+pseries2: org.apache.spark.rdd.RDD[Double] = ParallelCollectionRDD[31] at parallelize at <console>:28
+
+scala> val myCorrelation:Double = Statistics.corr(pseries1, pseries2)
+2019-10-09 20:14:08 WARN  TaskSetManager:66 - Stage 25 contains a task of very large size (398 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:14:08 WARN  TaskSetManager:66 - Stage 26 contains a task of very large size (398 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:14:09 WARN  TaskSetManager:66 - Stage 27 contains a task of very large size (398 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:14:09 WARN  BLAS:61 - Failed to load implementation from: com.github.fommil.netlib.NativeSystemBLAS
+2019-10-09 20:14:09 WARN  BLAS:61 - Failed to load implementation from: com.github.fommil.netlib.NativeRefBLAS
+myCorrelation: Double = 0.006056186159673227
+
+scala> val myCorrelation:Double = Statistics.corr(pseries1, pseries2, "pearson")
+2019-10-09 20:15:43 WARN  TaskSetManager:66 - Stage 28 contains a task of very large size (398 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:15:43 WARN  TaskSetManager:66 - Stage 29 contains a task of very large size (398 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:15:43 WARN  TaskSetManager:66 - Stage 30 contains a task of very large size (398 KB). The maximum recommended task size is 100 KB.
+myCorrelation: Double = 0.006056186159673228
+
+scala> val distTest = Statistics.kolmogorovSmirnovTest(pseries1, "norm", 0 ,1)
+2019-10-09 20:16:12 WARN  TaskSetManager:66 - Stage 31 contains a task of very large size (202 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:16:12 WARN  TaskSetManager:66 - Stage 32 contains a task of very large size (202 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:16:12 WARN  TaskSetManager:66 - Stage 33 contains a task of very large size (202 KB). The maximum recommended task size is 100 KB.
+distTest: org.apache.spark.mllib.stat.test.KolmogorovSmirnovTestResult =
+Kolmogorov-Smirnov test summary:
+degrees of freedom = 0
+statistic = 0.5000048040528273
+pValue = 7.298106563524698E-10
+Very strong presumption against null hypothesis: Sample follows theoretical distribution.
+
+scala> val distTest = Statistics.kolmogorovSmirnovTest(pseries1, "norm", 0, 1)
+2019-10-09 20:16:20 WARN  TaskSetManager:66 - Stage 35 contains a task of very large size (202 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:16:20 WARN  TaskSetManager:66 - Stage 36 contains a task of very large size (202 KB). The maximum recommended task size is 100 KB.
+2019-10-09 20:16:21 WARN  TaskSetManager:66 - Stage 37 contains a task of very large size (202 KB). The maximum recommended task size is 100 KB.
+distTest: org.apache.spark.mllib.stat.test.KolmogorovSmirnovTestResult =
+Kolmogorov-Smirnov test summary:
+degrees of freedom = 0
+statistic = 0.5000048040528273
+pValue = 7.298106563524698E-10
+Very strong presumption against null hypothesis: Sample follows theoretical distribution.
+
+scala> :quit

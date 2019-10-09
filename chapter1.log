@@ -1,0 +1,370 @@
+$ scala
+Welcome to Scala 2.12.7 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_144).
+Type in expressions for evaluation. Or try :help.
+
+scala> val a:Short = 1
+a: Short = 1
+
+scala> var a:Short = 1
+a: Short = 1
+
+scala> var a : Int = 23
+a: Int = 23
+
+scala> a
+res0: Int = 23
+
+scala> val a : Int = 23
+a: Int = 23
+
+scala> var b : Int = 23
+b: Int = 23
+
+scala> v
+<console>:12: error: not found: value v
+       v
+       ^
+
+scala> b
+res2: Int = 23
+
+scala> a
+res3: Int = 23
+
+scala> val temps : Array[Int] = Array(50, 51, 32)
+temps: Array[Int] = Array(50, 51, 32)
+
+scala> temps[0]
+<console>:1: error: identifier expected but integer literal found.
+       temps[0]
+             ^
+
+scala> temps(1)
+res4: Int = 51
+
+scala> temps(3)
+java.lang.ArrayIndexOutOfBoundsException: 3
+  ... 28 elided
+
+scala> temps(2)
+res6: Int = 32
+
+scala> temps(2).length()
+<console>:13: error: value length is not a member of Int
+       temps(2).length()
+                ^
+
+scala> temps(2).length
+<console>:13: error: value length is not a member of Int
+       temps(2).length
+                ^
+
+scala> temps.length
+res9: Int = 3
+
+scala> temps(1) = 52
+
+scala> temps(1) = 52.1
+<console>:13: error: type mismatch;
+ found   : Double(52.1)
+ required: Int
+       temps(1) = 52.1
+                  ^
+
+scala> val temps2 : Array[Int] = new Array[Int](10)
+temps2: Array[Int] = Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+scala> val temps3 : Array[Array[Int]] =  Array.ofDim[Int](10, 10)
+temps3: Array[Array[Int]] = Array(Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0), Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
+scala> import Array._
+import Array._
+
+scala> concat(temps, temps2)
+res12: Array[Int] = Array(50, 52, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+
+scala> temps3.
+++             compose         filterNot         indices              maxBy              reduceRightOption   span           toSeq
+++:            contains        find              init                 min                repr                splitAt        toSet
++:             containsSlice   flatMap           inits                minBy              reverse             startsWith     toStream
+/:             copyToArray     flatten           intersect            mkString           reverseIterator     stringPrefix   toTraversable
+:+             copyToBuffer    fold              isDefinedAt          nonEmpty           reverseMap          sum            toVector
+:\             corresponds     foldLeft          isEmpty              orElse             runWith             tail           transform
+addString      count           foldRight         isTraversableAgain   padTo              sameElements        tails          transpose
+aggregate      deep            forall            iterator             par                scan                take           union
+andThen        diff            foreach           last                 partition          scanLeft            takeRight      unzip
+apply          distinct        genericBuilder    lastIndexOf          patch              scanRight           takeWhile      unzip3
+applyOrElse    drop            groupBy           lastIndexOfSlice     permutations       segmentLength       to             update
+array          dropRight       grouped           lastIndexWhere       prefixLength       seq                 toArray        updated
+canEqual       dropWhile       hasDefiniteSize   lastOption           product            size                toBuffer       view
+clone          elemManifest    head              length               reduce             slice               toIndexedSeq   withFilter
+collect        elemTag         headOption        lengthCompare        reduceLeft         sliding             toIterable     zip
+collectFirst   endsWith        indexOf           lift                 reduceLeftOption   sortBy              toIterator     zipAll
+combinations   exists          indexOfSlice      map                  reduceOption       sortWith            toList         zipWithIndex
+companion      filter          indexWhere        max                  reduceRight        sorted              toMap
+
+scala> temps3.
+!=             collectFirst    equals            indexOf              max                reduceRight         startsWith     toTraversable
+##             combinations    exists            indexOfSlice         maxBy              reduceRightOption   stringPrefix   toVector
++              companion       filter            indexWhere           min                repr                sum            transform
+++             compose         filterNot         indices              minBy              reverse             synchronized   transpose
+++:            contains        find              init                 mkString           reverseIterator     tail           union
++:             containsSlice   flatMap           inits                ne                 reverseMap          tails          unzip
+->             copyToArray     flatten           intersect            nonEmpty           runWith             take           unzip3
+/:             copyToBuffer    fold              isDefinedAt          notify             sameElements        takeRight      update
+:+             corresponds     foldLeft          isEmpty              notifyAll          scan                takeWhile      updated
+:\             count           foldRight         isInstanceOf         orElse             scanLeft            to             view
+==             deep            forall            isTraversableAgain   padTo              scanRight           toArray        wait
+addString      diff            foreach           iterator             par                segmentLength       toBuffer       withFilter
+aggregate      distinct        formatted         last                 partition          seq                 toIndexedSeq   zip
+andThen        drop            genericBuilder    lastIndexOf          patch              size                toIterable     zipAll
+apply          dropRight       getClass          lastIndexOfSlice     permutations       slice               toIterator     zipWithIndex
+applyOrElse    dropWhile       groupBy           lastIndexWhere       prefixLength       sliding             toList         →
+array          elemManifest    grouped           lastOption           product            sortBy              toMap
+asInstanceOf   elemTag         hasDefiniteSize   length               reduce             sortWith            toSeq
+canEqual       endsWith        hashCode          lengthCompare        reduceLeft         sorted              toSet
+clone          ensuring        head              lift                 reduceLeftOption   span                toStream
+collect        eq              headOption        map                  reduceOption       splitAt             toString
+
+scala> temps3.
+!=             collectFirst    equals            indexOf              max                reduceRight         startsWith     toTraversable
+##             combinations    exists            indexOfSlice         maxBy              reduceRightOption   stringPrefix   toVector
++              companion       filter            indexWhere           min                repr                sum            transform
+++             compose         filterNot         indices              minBy              reverse             synchronized   transpose
+++:            contains        find              init                 mkString           reverseIterator     tail           union
++:             containsSlice   flatMap           inits                ne                 reverseMap          tails          unzip
+->             copyToArray     flatten           intersect            nonEmpty           runWith             take           unzip3
+/:             copyToBuffer    fold              isDefinedAt          notify             sameElements        takeRight      update
+:+             corresponds     foldLeft          isEmpty              notifyAll          scan                takeWhile      updated
+:\             count           foldRight         isInstanceOf         orElse             scanLeft            to             view
+==             deep            forall            isTraversableAgain   padTo              scanRight           toArray        wait
+addString      diff            foreach           iterator             par                segmentLength       toBuffer       withFilter
+aggregate      distinct        formatted         last                 partition          seq                 toIndexedSeq   zip
+andThen        drop            genericBuilder    lastIndexOf          patch              size                toIterable     zipAll
+apply          dropRight       getClass          lastIndexOfSlice     permutations       slice               toIterator     zipWithIndex
+applyOrElse    dropWhile       groupBy           lastIndexWhere       prefixLength       sliding             toList         →
+array          elemManifest    grouped           lastOption           product            sortBy              toMap
+asInstanceOf   elemTag         hasDefiniteSize   length               reduce             sortWith            toSeq
+canEqual       endsWith        hashCode          lengthCompare        reduceLeft         sorted              toSet
+clone          ensuring        head              lift                 reduceLeftOption   span                toStream
+collect        eq              headOption        map                  reduceOption       splitAt             toString
+
+scala> val vec1 : Vector[Int] = Vector(1,2, 34, 234, 98, 55)
+vec1: Vector[Int] = Vector(1, 2, 34, 234, 98, 55)
+
+scala> vec1(1)
+res13: Int = 2
+
+scala> vec1(3)
+res14: Int = 234
+
+scala> val range : Range = 1 to 10
+range: Range = Range 1 to 10
+
+scala> range
+res15: Range = Range 1 to 10
+
+scala> val range = 1 to 10
+range: scala.collection.immutable.Range.Inclusive = Range 1 to 10
+
+scala> val range : Range = new 1 to 10
+<console>:1: error: identifier expected but integer literal found.
+       val range : Range = new 1 to 10
+                               ^
+
+scala> val range : Range = new Range(1 to 10)
+<console>:14: error: not enough arguments for constructor Range: (start: Int, end: Int, step: Int)scala.collection.immutable.Range.
+Unspecified value parameters end, step.
+       val range : Range = new Range(1 to 10)
+                           ^
+
+scala> val range1 : Range = new Range(1 to 10)
+<console>:14: error: not enough arguments for constructor Range: (start: Int, end: Int, step: Int)scala.collection.immutable.Range.
+Unspecified value parameters end, step.
+       val range1 : Range = new Range(1 to 10)
+                            ^
+
+scala> val range1 : Range = new Range(1, 10)
+<console>:14: error: not enough arguments for constructor Range: (start: Int, end: Int, step: Int)scala.collection.immutable.Range.
+Unspecified value parameter step.
+       val range1 : Range = new Range(1, 10)
+                            ^
+
+scala> val range1 : Range = new Range(1, 10, 1)
+range1: Range = Range 1 until 10
+
+scala> range1
+res16: Range = Range 1 until 10
+
+scala> val range1 : Range = new Range(1, 10, 2)
+range1: Range = inexact Range 1 until 10 by 2
+
+scala> range1
+res17: Range = inexact Range 1 until 10 by 2
+
+scala> val capitals : Map[String] = Map("Argentina" -> "Buenos Aires", "Canada" -> "Ottowa", "Liberia" -> "Monrovia")
+<console>:14: error: wrong number of type arguments for Map, should be 2
+       val capitals : Map[String] = Map("Argentina" -> "Buenos Aires", "Canada" -> "Ottowa", "Liberia" -> "Monrovia")
+                      ^
+
+scala> val capitals : Map[String, String] = Map("Argentina" -> "Buenos Aires", "Canada" -> "Ottowa", "Liberia" -> "Monrovia")
+capitals: Map[String,String] = Map(Argentina -> Buenos Aires, Canada -> Ottowa, Liberia -> Monrovia)
+
+scala> capitals.keys
+res18: Iterable[String] = Set(Argentina, Canada, Liberia)
+
+scala> capitals.values
+res19: Iterable[String] = MapLike.DefaultValuesIterable(Buenos Aires, Ottowa, Monrovia)
+
+scala> capitals get "Argentina"
+res20: Option[String] = Some(Buenos Aires)
+
+scala> capitals get "tina"
+res21: Option[String] = None
+
+scala> capitals get "Mexico"
+res22: Option[String] = None
+
+scala> capitals("Mexico")
+java.util.NoSuchElementException: key not found: Mexico
+  at scala.collection.immutable.Map$Map3.apply(Map.scala:167)
+  ... 28 elided
+
+scala> capitals("Liberia")
+res24: String = Monrovia
+
+scala> capitals contains "Monrovia"
+res25: Boolean = false
+
+scala> capitals contains "Liberia"
+res26: Boolean = true
+
+scala> capitals getOrElse("China", "No capitals found.")
+res27: String = No capitals found.
+
+scala> capitals + ("Ireland" -> "Dublin")
+res28: scala.collection.immutable.Map[String,String] = Map(Argentina -> Buenos Aires, Canada -> Ottowa, Liberia -> Monrovia, Ireland -> Dublin)
+
+scala> capitals - ("Liberia")
+res29: scala.collection.immutable.Map[String,String] = Map(Argentina -> Buenos Aires, Canada -> Ottowa)
+
+scala> capitals
+res30: Map[String,String] = Map(Argentina -> Buenos Aires, Canada -> Ottowa, Liberia -> Monrovia)
+
+scala> println({
+     | val a = 2*3
+     | a + 4
+     | })
+10
+
+scala> // ^blocking mechanism
+
+scala> def myFunction(a:Int, b:Int) : Int = {
+     | val c = a*b
+     | return c
+     | }
+myFunction: (a: Int, b: Int)Int
+
+scala> myFunction(2, 3)
+res32: Int = 6
+
+scala> def myProcedure(in:String) : Unit = {}
+myProcedure: (in: String)Unit
+
+scala> def myProcedure(in:String) : Unit = {
+     | println(in)
+     | }
+myProcedure: (in: String)Unit
+
+scala> // Unit is like void in java, a function which returns nothing/no value
+
+scala> myProcedure("This is a log message,")
+This is a log message,
+
+scala> myProcedure("This is a log message.")
+This is a log message.
+
+scala> val y : Array[String] = Array("England", "Liberia", "Haiti", "Australia", "Sweden")
+y: Array[String] = Array(England, Liberia, Haiti, Australia, Sweden)
+
+scala> y.sorted
+res35: Array[String] = Array(Australia, England, Haiti, Liberia, Sweden)
+
+scala> val x : Array[Int] = Array(5,4,3,2,1)
+x: Array[Int] = Array(5, 4, 3, 2, 1)
+
+scala> x.sorted
+res36: Array[Int] = Array(1, 2, 3, 4, 5)
+
+scala> class location(var latitude:Int, var lat_direction:Char, var longitude:Int, var long_direction:Char, var altitude:Int)
+defined class location
+
+scala> val loc1 = new location(45, 'N', 120, 'W', 300)
+loc1: location = location@5d79c098
+
+scala> loc1.altitude
+res37: Int = 300
+
+scala> loc1.
+altitude   lat_direction   latitude   long_direction   longitude
+
+scala> class myPublicPrivate(val x:Int = 0, val y:Int = 0, private val z:Int = 0)
+defined class myPublicPrivate
+
+scala> class myPublicPrivate(public val x:Int = 0, public val y:Int = 0, private val z:Int = 0)
+<console>:1: error: ':' expected but 'val' found.
+       class myPublicPrivate(public val x:Int = 0, public val y:Int = 0, private val z:Int = 0)
+                                    ^
+
+scala> class myPublicPrivate(val x:Int = 0, val y:Int = 0, private val z:Int = 0)
+defined class myPublicPrivate
+
+scala> val instance = new myPublicPrivate
+instance: myPublicPrivate = myPublicPrivate@6cfef57f
+
+scala> instance.
+x   y
+
+scala> instance.
+!=   +    ==             ensuring   equals      getClass   isInstanceOf   notify      synchronized   wait   y
+##   ->   asInstanceOf   eq         formatted   hashCode   ne             notifyAll   toString       x      →
+
+scala> // only x and y are shown, not z
+
+scala> class Point2D(coord1:Int, coord2:Int) {
+     | var a:Int = coord1
+     | var b:Int = coord2
+     | def move(delta_a:Int, delta_b:Int) {
+     | a = a + delta_
+delta_a   delta_b
+     | a = a + delta_a
+     | b = b + delta_b
+     | }
+     | }
+defined class Point2D
+
+scala> val point1 = new Point2D(10, 20)
+point1: Point2D = Point2D@62abc17b
+
+scala> point1.a
+a   asInstanceOf
+
+scala> point1.a
+res38: Int = 10
+
+scala> point1.
+a   b   move
+
+scala> point1.
+!=   +    ==   asInstanceOf   ensuring   equals      getClass   isInstanceOf   ne       notifyAll      toString   →
+##   ->   a    b              eq         formatted   hashCode   move           notify   synchronized   wait
+
+scala> point1.move(5, 15)
+
+scala> point1.a
+res40: Int = 15
+
+scala> point1.b
+res41: Int = 35
+
+scala> :quit

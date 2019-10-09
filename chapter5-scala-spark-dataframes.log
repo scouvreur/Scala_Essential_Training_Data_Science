@@ -1,0 +1,374 @@
+$ spark-shell
+2019-10-09 20:29:37 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://172.20.113.122:4040
+Spark context available as 'sc' (master = local[*], app id = local-1570649383732).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.3.2
+      /_/
+
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_144)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.SparkSession
+
+scala> val spark = SparkSession.builder().appName("DataFrameExercise").getOrCreate()
+2019-10-09 20:29:53 WARN  SparkSession$Builder:66 - Using an existing SparkSession; some configuration may not take effect.
+spark: org.apache.spark.sql.SparkSession = org.apache.spark.sql.SparkSession@75bf9e67
+
+scala> spark
+res0: org.apache.spark.sql.SparkSession = org.apache.spark.sql.SparkSession@75bf9e67
+
+scala> val df_emps = spark.read.option("header", true).csv("employee.txt")
+2019-10-09 20:30:12 WARN  ObjectStore:568 - Failed to get database global_temp, returning NoSuchObjectException
+df_emps: org.apache.spark.sql.DataFrame = [id: string, last_name: string ... 7 more fields]
+
+scala> df_emps.show(10, false)
++---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------+
+|id |last_name   |email                       |gender  |department  |start_date  |salary|job_title                   |region_id|
++---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------+
+|1  |'Kelley'    |'rkelley0@soundcloud.com'   |'Female'|'Computers' |'10/2/2009' |67470 |'Structural Engineer'       |2        |
+|2  |'Armstrong' |'sarmstrong1@infoseek.co.jp'|'Male'  |'Sports'    |'3/31/2008' |71869 |'Financial Advisor'         |2        |
+|3  |'Carr'      |'fcarr2@woothemes.com'      |'Male'  |'Automotive'|'7/12/2009' |101768|'Recruiting Manager'        |3        |
+|4  |'Murray'    |'jmurray3@gov.uk'           |'Female'|'Jewelery'  |'12/25/2014'|96897 |'Desktop Support Technician'|3        |
+|5  |'Ellis'     |'jellis4@sciencedirect.com' |'Female'|'Grocery'   |'9/19/2002' |63702 |'Software Engineer III'     |7        |
+|6  |'Phillips'  |'bphillips5@time.com'       |'Male'  |'Tools'     |'8/21/2013' |118497|'Executive Secretary'       |1        |
+|7  |'Williamson'|'rwilliamson6@ted.com'      |'Male'  |'Computers' |'5/14/2006' |65889 |'Dental Hygienist'          |6        |
+|8  |'Harris'    |'aharris7@ucoz.com'         |'Female'|'Toys'      |'8/12/2003' |84427 |'Safety Technician I'       |4        |
+|9  |'James'     |'rjames8@prnewswire.com'    |'Male'  |'Jewelery'  |'9/7/2005'  |108657|'Sales Associate'           |2        |
+|10 |'Sanchez'   |'rsanchez9@cloudflare.com'  |'Male'  |'Movies'    |'3/13/2013' |108093|'Sales Representative'      |1        |
++---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------+
+only showing top 10 rows
+
+
+scala> df_emps.schema
+res2: org.apache.spark.sql.types.StructType = StructType(StructField(id,StringType,true), StructField(last_name,StringType,true), StructField(email,StringType,true), StructField(gender,StringType,true), StructField(department,StringType,true), StructField(start_date,StringType,true), StructField(salary,StringType,true), StructField(job_title,StringType,true), StructField(region_id,StringType,true))
+
+scala> val df_cr = spark.read.option("header", true).csv("country_region.txt")
+df_cr: org.apache.spark.sql.DataFrame = [region_id: string, company_regions: string ... 1 more field]
+
+scala> df_cr.show(10, false)
++---------+-------------------+---------+
+|region_id|company_regions    |country  |
++---------+-------------------+---------+
+|1        | 'Northeast'       | 'USA'   |
+|2        | 'Southeast'       | 'USA'   |
+|3        | 'Northwest'       | 'USA'   |
+|4        | 'Southwest'       | 'USA'   |
+|5        | 'British Columbia'| 'Canada'|
+|6        | 'Quebec'          | 'Canada'|
+|7        | 'Nova Scotia'     | 'Canada'|
++---------+-------------------+---------+
+
+
+scala> df_cr.columns
+res4: Array[String] = Array(region_id, company_regions, country)
+
+scala> df_cr.columns.foreach(println)
+region_id
+company_regions
+country
+
+scala> val df_dd = spark.read.option("header", true).csv("dept_div.txt")
+df_dd: org.apache.spark.sql.DataFrame = [department: string, company_division: string]
+
+scala> df_dd.show(10, false)
++-------------+----------------------+
+|department   |company_division      |
++-------------+----------------------+
+|'Automotive' |'Auto & Hardware'     |
+|'Baby'       |'Domestic'            |
+|'Beauty'     |'Domestic'            |
+|'Clothing'   |'Domestic'            |
+|'Computers'  |'Electronic Equipment'|
+|'Electronics'|'Electronic Equipment'|
+|'Games'      |'Domestic'            |
+|'Garden'     |'Outdoors & Garden'   |
+|'Grocery'    |'Domestic'            |
+|'Health'     |'Domestic'            |
++-------------+----------------------+
+only showing top 10 rows
+
+
+scala> df_emps.show(10, false)
++---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------+
+|id |last_name   |email                       |gender  |department  |start_date  |salary|job_title                   |region_id|
++---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------+
+|1  |'Kelley'    |'rkelley0@soundcloud.com'   |'Female'|'Computers' |'10/2/2009' |67470 |'Structural Engineer'       |2        |
+|2  |'Armstrong' |'sarmstrong1@infoseek.co.jp'|'Male'  |'Sports'    |'3/31/2008' |71869 |'Financial Advisor'         |2        |
+|3  |'Carr'      |'fcarr2@woothemes.com'      |'Male'  |'Automotive'|'7/12/2009' |101768|'Recruiting Manager'        |3        |
+|4  |'Murray'    |'jmurray3@gov.uk'           |'Female'|'Jewelery'  |'12/25/2014'|96897 |'Desktop Support Technician'|3        |
+|5  |'Ellis'     |'jellis4@sciencedirect.com' |'Female'|'Grocery'   |'9/19/2002' |63702 |'Software Engineer III'     |7        |
+|6  |'Phillips'  |'bphillips5@time.com'       |'Male'  |'Tools'     |'8/21/2013' |118497|'Executive Secretary'       |1        |
+|7  |'Williamson'|'rwilliamson6@ted.com'      |'Male'  |'Computers' |'5/14/2006' |65889 |'Dental Hygienist'          |6        |
+|8  |'Harris'    |'aharris7@ucoz.com'         |'Female'|'Toys'      |'8/12/2003' |84427 |'Safety Technician I'       |4        |
+|9  |'James'     |'rjames8@prnewswire.com'    |'Male'  |'Jewelery'  |'9/7/2005'  |108657|'Sales Associate'           |2        |
+|10 |'Sanchez'   |'rsanchez9@cloudflare.com'  |'Male'  |'Movies'    |'3/13/2013' |108093|'Sales Representative'      |1        |
++---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------+
+only showing top 10 rows
+
+
+scala> df_emps.createOrReplaceTempView("employees")
+
+scala> val sqldf_emps = spark.sql("SELECT * FROM employees")
+sqldf_emps: org.apache.spark.sql.DataFrame = [id: string, last_name: string ... 7 more fields]
+
+scala> val sqldf_emps_by_dept = spark.sql("SELECT department, COUNT(*) FROM employees GROUP BY department")
+sqldf_emps_by_dept: org.apache.spark.sql.DataFrame = [department: string, count(1): bigint]
+
+scala> sqldf_emps_by_dept.show(10, false)
++-------------+--------+
+|department   |count(1)|
++-------------+--------+
+|'Clothing'   |53      |
+|'Books'      |47      |
+|'Garden'     |47      |
+|'Baby'       |45      |
+|'Beauty'     |53      |
+|'Automotive' |46      |
+|'Grocery'    |46      |
+|'Home'       |52      |
+|'Electronics'|49      |
+|'Sports'     |40      |
++-------------+--------+
+only showing top 10 rows
+
+
+scala> val sqldf_emps_by_dept_gender = spark.sql("SELECT department, gender, COUNT(*) FROM employees GROUP BY department, gender")
+sqldf_emps_by_dept_gender: org.apache.spark.sql.DataFrame = [department: string, gender: string ... 1 more field]
+
+scala> sqldf_emps_by_dept_gender.show(10, false)
++-----------+--------+--------+
+|department |gender  |count(1)|
++-----------+--------+--------+
+|'Grocery'  |'Male'  |22      |
+|'Health'   |'Female'|25      |
+|'Health'   |'Male'  |21      |
+|'Tools'    |'Female'|21      |
+|'Home'     |'Male'  |20      |
+|'Kids'     |'Male'  |17      |
+|'Movies'   |'Male'  |22      |
+|'Toys'     |'Male'  |24      |
+|'Computers'|'Female'|26      |
+|'Outdoors' |'Male'  |20      |
++-----------+--------+--------+
+only showing top 10 rows
+
+
+scala> val sqldf_depts = spark.sql("SELECT DISTINCT department FROM employees")
+sqldf_depts: org.apache.spark.sql.DataFrame = [department: string]
+
+scala> sqldf_depts.show()
++-------------+
+|   department|
++-------------+
+|   'Clothing'|
+|      'Books'|
+|     'Garden'|
+|       'Baby'|
+|     'Beauty'|
+| 'Automotive'|
+|    'Grocery'|
+|       'Home'|
+|'Electronics'|
+|     'Sports'|
+|     'Health'|
+|   'Outdoors'|
+|       'Kids'|
+|      'Tools'|
+|      'Music'|
+|      'Games'|
+|     'Movies'|
+|       'Toys'|
+|   'Jewelery'|
+|  'Computers'|
++-------------+
+only showing top 20 rows
+
+
+scala> val sqldf_emps_100 = spark.sql("SELECT * FROM employees WHERE id < 100")
+sqldf_emps_100: org.apache.spark.sql.DataFrame = [id: string, last_name: string ... 7 more fields]
+
+scala> vsqldf_emps_100.show()
+<console>:25: error: not found: value vsqldf_emps_100
+       vsqldf_emps_100.show()
+       ^
+
+scala> sqldf_emps_100.show()
++---+------------+--------------------+--------+-------------+------------+------+--------------------+---------+
+| id|   last_name|               email|  gender|   department|  start_date|salary|           job_title|region_id|
++---+------------+--------------------+--------+-------------+------------+------+--------------------+---------+
+|  1|    'Kelley'|'rkelley0@soundcl...|'Female'|  'Computers'| '10/2/2009'| 67470|'Structural Engin...|        2|
+|  2| 'Armstrong'|'sarmstrong1@info...|  'Male'|     'Sports'| '3/31/2008'| 71869| 'Financial Advisor'|        2|
+|  3|      'Carr'|'fcarr2@woothemes...|  'Male'| 'Automotive'| '7/12/2009'|101768|'Recruiting Manager'|        3|
+|  4|    'Murray'|   'jmurray3@gov.uk'|'Female'|   'Jewelery'|'12/25/2014'| 96897|'Desktop Support ...|        3|
+|  5|     'Ellis'|'jellis4@scienced...|'Female'|    'Grocery'| '9/19/2002'| 63702|'Software Enginee...|        7|
+|  6|  'Phillips'|'bphillips5@time....|  'Male'|      'Tools'| '8/21/2013'|118497|'Executive Secret...|        1|
+|  7|'Williamson'|'rwilliamson6@ted...|  'Male'|  'Computers'| '5/14/2006'| 65889|  'Dental Hygienist'|        6|
+|  8|    'Harris'| 'aharris7@ucoz.com'|'Female'|       'Toys'| '8/12/2003'| 84427|'Safety Technicia...|        4|
+|  9|     'James'|'rjames8@prnewswi...|  'Male'|   'Jewelery'|  '9/7/2005'|108657|   'Sales Associate'|        2|
+| 10|   'Sanchez'|'rsanchez9@cloudf...|  'Male'|     'Movies'| '3/13/2013'|108093|'Sales Representa...|        1|
+| 11|    'Jacobs'|'jjacobsa@sbwire....|'Female'|   'Jewelery'|'11/27/2003'|121966|'Community Outrea...|        7|
+| 12|     'Black'|'mblackb@edublogs...|  'Male'|   'Clothing'|  '2/4/2003'| 44179|   'Data Coordiator'|        7|
+| 13|   'Schmidt'|'sschmidtc@state....|  'Male'|       'Baby'|'10/13/2002'| 85227|'Compensation Ana...|        3|
+| 14|      'Webb'|  'awebbd@baidu.com'|'Female'|  'Computers'|'10/22/2006'| 59763|'Software Test En...|        4|
+| 15|    'Jacobs'|'ajacobse@google.it'|'Female'|      'Games'|  '3/4/2007'|141139|'Community Outrea...|        7|
+| 16|    'Medina'|'smedinaf@amazona...|'Female'|       'Baby'| '3/14/2008'|106659| 'Web Developer III'|        1|
+| 17|    'Morgan'|'dmorgang@123-reg...|'Female'|       'Kids'|  '5/4/2011'|148952|     'Programmer IV'|        6|
+| 18|    'Nguyen'|'jnguyenh@google....|  'Male'|       'Home'| '11/3/2014'| 93804|      'Geologist II'|        5|
+| 19|       'Day'|'rdayi@chronoengi...|  'Male'|'Electronics'| '9/22/2004'|109890|          'VP Sales'|        3|
+| 20|      'Carr'|  'dcarrj@ocn.ne.jp'|'Female'|     'Movies'|'11/22/2007'|115274|'VP Quality Control'|        5|
++---+------------+--------------------+--------+-------------+------------+------+--------------------+---------+
+only showing top 20 rows
+
+
+scala> sqldf_emps_100.show(20, false)
++---+------------+----------------------------+--------+-------------+------------+------+-------------------------------+---------+
+|id |last_name   |email                       |gender  |department   |start_date  |salary|job_title                      |region_id|
++---+------------+----------------------------+--------+-------------+------------+------+-------------------------------+---------+
+|1  |'Kelley'    |'rkelley0@soundcloud.com'   |'Female'|'Computers'  |'10/2/2009' |67470 |'Structural Engineer'          |2        |
+|2  |'Armstrong' |'sarmstrong1@infoseek.co.jp'|'Male'  |'Sports'     |'3/31/2008' |71869 |'Financial Advisor'            |2        |
+|3  |'Carr'      |'fcarr2@woothemes.com'      |'Male'  |'Automotive' |'7/12/2009' |101768|'Recruiting Manager'           |3        |
+|4  |'Murray'    |'jmurray3@gov.uk'           |'Female'|'Jewelery'   |'12/25/2014'|96897 |'Desktop Support Technician'   |3        |
+|5  |'Ellis'     |'jellis4@sciencedirect.com' |'Female'|'Grocery'    |'9/19/2002' |63702 |'Software Engineer III'        |7        |
+|6  |'Phillips'  |'bphillips5@time.com'       |'Male'  |'Tools'      |'8/21/2013' |118497|'Executive Secretary'          |1        |
+|7  |'Williamson'|'rwilliamson6@ted.com'      |'Male'  |'Computers'  |'5/14/2006' |65889 |'Dental Hygienist'             |6        |
+|8  |'Harris'    |'aharris7@ucoz.com'         |'Female'|'Toys'       |'8/12/2003' |84427 |'Safety Technician I'          |4        |
+|9  |'James'     |'rjames8@prnewswire.com'    |'Male'  |'Jewelery'   |'9/7/2005'  |108657|'Sales Associate'              |2        |
+|10 |'Sanchez'   |'rsanchez9@cloudflare.com'  |'Male'  |'Movies'     |'3/13/2013' |108093|'Sales Representative'         |1        |
+|11 |'Jacobs'    |'jjacobsa@sbwire.com'       |'Female'|'Jewelery'   |'11/27/2003'|121966|'Community Outreach Specialist'|7        |
+|12 |'Black'     |'mblackb@edublogs.org'      |'Male'  |'Clothing'   |'2/4/2003'  |44179 |'Data Coordiator'              |7        |
+|13 |'Schmidt'   |'sschmidtc@state.gov'       |'Male'  |'Baby'       |'10/13/2002'|85227 |'Compensation Analyst'         |3        |
+|14 |'Webb'      |'awebbd@baidu.com'          |'Female'|'Computers'  |'10/22/2006'|59763 |'Software Test Engineer III'   |4        |
+|15 |'Jacobs'    |'ajacobse@google.it'        |'Female'|'Games'      |'3/4/2007'  |141139|'Community Outreach Specialist'|7        |
+|16 |'Medina'    |'smedinaf@amazonaws.com'    |'Female'|'Baby'       |'3/14/2008' |106659|'Web Developer III'            |1        |
+|17 |'Morgan'    |'dmorgang@123-reg.co.uk'    |'Female'|'Kids'       |'5/4/2011'  |148952|'Programmer IV'                |6        |
+|18 |'Nguyen'    |'jnguyenh@google.com'       |'Male'  |'Home'       |'11/3/2014' |93804 |'Geologist II'                 |5        |
+|19 |'Day'       |'rdayi@chronoengine.com'    |'Male'  |'Electronics'|'9/22/2004' |109890|'VP Sales'                     |3        |
+|20 |'Carr'      |'dcarrj@ocn.ne.jp'          |'Female'|'Movies'     |'11/22/2007'|115274|'VP Quality Control'           |5        |
++---+------------+----------------------------+--------+-------------+------------+------+-------------------------------+---------+
+only showing top 20 rows
+
+
+scala> df_emps.show(20, false)
++---+------------+----------------------------+--------+-------------+------------+------+-------------------------------+---------+
+|id |last_name   |email                       |gender  |department   |start_date  |salary|job_title                      |region_id|
++---+------------+----------------------------+--------+-------------+------------+------+-------------------------------+---------+
+|1  |'Kelley'    |'rkelley0@soundcloud.com'   |'Female'|'Computers'  |'10/2/2009' |67470 |'Structural Engineer'          |2        |
+|2  |'Armstrong' |'sarmstrong1@infoseek.co.jp'|'Male'  |'Sports'     |'3/31/2008' |71869 |'Financial Advisor'            |2        |
+|3  |'Carr'      |'fcarr2@woothemes.com'      |'Male'  |'Automotive' |'7/12/2009' |101768|'Recruiting Manager'           |3        |
+|4  |'Murray'    |'jmurray3@gov.uk'           |'Female'|'Jewelery'   |'12/25/2014'|96897 |'Desktop Support Technician'   |3        |
+|5  |'Ellis'     |'jellis4@sciencedirect.com' |'Female'|'Grocery'    |'9/19/2002' |63702 |'Software Engineer III'        |7        |
+|6  |'Phillips'  |'bphillips5@time.com'       |'Male'  |'Tools'      |'8/21/2013' |118497|'Executive Secretary'          |1        |
+|7  |'Williamson'|'rwilliamson6@ted.com'      |'Male'  |'Computers'  |'5/14/2006' |65889 |'Dental Hygienist'             |6        |
+|8  |'Harris'    |'aharris7@ucoz.com'         |'Female'|'Toys'       |'8/12/2003' |84427 |'Safety Technician I'          |4        |
+|9  |'James'     |'rjames8@prnewswire.com'    |'Male'  |'Jewelery'   |'9/7/2005'  |108657|'Sales Associate'              |2        |
+|10 |'Sanchez'   |'rsanchez9@cloudflare.com'  |'Male'  |'Movies'     |'3/13/2013' |108093|'Sales Representative'         |1        |
+|11 |'Jacobs'    |'jjacobsa@sbwire.com'       |'Female'|'Jewelery'   |'11/27/2003'|121966|'Community Outreach Specialist'|7        |
+|12 |'Black'     |'mblackb@edublogs.org'      |'Male'  |'Clothing'   |'2/4/2003'  |44179 |'Data Coordiator'              |7        |
+|13 |'Schmidt'   |'sschmidtc@state.gov'       |'Male'  |'Baby'       |'10/13/2002'|85227 |'Compensation Analyst'         |3        |
+|14 |'Webb'      |'awebbd@baidu.com'          |'Female'|'Computers'  |'10/22/2006'|59763 |'Software Test Engineer III'   |4        |
+|15 |'Jacobs'    |'ajacobse@google.it'        |'Female'|'Games'      |'3/4/2007'  |141139|'Community Outreach Specialist'|7        |
+|16 |'Medina'    |'smedinaf@amazonaws.com'    |'Female'|'Baby'       |'3/14/2008' |106659|'Web Developer III'            |1        |
+|17 |'Morgan'    |'dmorgang@123-reg.co.uk'    |'Female'|'Kids'       |'5/4/2011'  |148952|'Programmer IV'                |6        |
+|18 |'Nguyen'    |'jnguyenh@google.com'       |'Male'  |'Home'       |'11/3/2014' |93804 |'Geologist II'                 |5        |
+|19 |'Day'       |'rdayi@chronoengine.com'    |'Male'  |'Electronics'|'9/22/2004' |109890|'VP Sales'                     |3        |
+|20 |'Carr'      |'dcarrj@ocn.ne.jp'          |'Female'|'Movies'     |'11/22/2007'|115274|'VP Quality Control'           |5        |
++---+------------+----------------------------+--------+-------------+------------+------+-------------------------------+---------+
+only showing top 20 rows
+
+
+scala> df_cr.show(20, false)
++---------+-------------------+---------+
+|region_id|company_regions    |country  |
++---------+-------------------+---------+
+|1        | 'Northeast'       | 'USA'   |
+|2        | 'Southeast'       | 'USA'   |
+|3        | 'Northwest'       | 'USA'   |
+|4        | 'Southwest'       | 'USA'   |
+|5        | 'British Columbia'| 'Canada'|
+|6        | 'Quebec'          | 'Canada'|
+|7        | 'Nova Scotia'     | 'Canada'|
++---------+-------------------+---------+
+
+
+scala> val df_joined = df_emps.join(df_cr, "region_id")
+df_joined: org.apache.spark.sql.DataFrame = [region_id: string, id: string ... 9 more fields]
+
+scala> df_joined.columns.foreach(println)
+region_id
+id
+last_name
+email
+gender
+department
+start_date
+salary
+job_title
+company_regions
+country
+
+scala> df_emps.columns.foreach(println)
+id
+last_name
+email
+gender
+department
+start_date
+salary
+job_title
+region_id
+
+scala> df_cr.columns.foreach(println)
+region_id
+company_regions
+country
+
+scala> df_joined.show(10, false)
++---------+---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------------+---------+
+|region_id|id |last_name   |email                       |gender  |department  |start_date  |salary|job_title                   |company_regions|country  |
++---------+---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------------+---------+
+|2        |1  |'Kelley'    |'rkelley0@soundcloud.com'   |'Female'|'Computers' |'10/2/2009' |67470 |'Structural Engineer'       | 'Southeast'   | 'USA'   |
+|2        |2  |'Armstrong' |'sarmstrong1@infoseek.co.jp'|'Male'  |'Sports'    |'3/31/2008' |71869 |'Financial Advisor'         | 'Southeast'   | 'USA'   |
+|3        |3  |'Carr'      |'fcarr2@woothemes.com'      |'Male'  |'Automotive'|'7/12/2009' |101768|'Recruiting Manager'        | 'Northwest'   | 'USA'   |
+|3        |4  |'Murray'    |'jmurray3@gov.uk'           |'Female'|'Jewelery'  |'12/25/2014'|96897 |'Desktop Support Technician'| 'Northwest'   | 'USA'   |
+|7        |5  |'Ellis'     |'jellis4@sciencedirect.com' |'Female'|'Grocery'   |'9/19/2002' |63702 |'Software Engineer III'     | 'Nova Scotia' | 'Canada'|
+|1        |6  |'Phillips'  |'bphillips5@time.com'       |'Male'  |'Tools'     |'8/21/2013' |118497|'Executive Secretary'       | 'Northeast'   | 'USA'   |
+|6        |7  |'Williamson'|'rwilliamson6@ted.com'      |'Male'  |'Computers' |'5/14/2006' |65889 |'Dental Hygienist'          | 'Quebec'      | 'Canada'|
+|4        |8  |'Harris'    |'aharris7@ucoz.com'         |'Female'|'Toys'      |'8/12/2003' |84427 |'Safety Technician I'       | 'Southwest'   | 'USA'   |
+|2        |9  |'James'     |'rjames8@prnewswire.com'    |'Male'  |'Jewelery'  |'9/7/2005'  |108657|'Sales Associate'           | 'Southeast'   | 'USA'   |
+|1        |10 |'Sanchez'   |'rsanchez9@cloudflare.com'  |'Male'  |'Movies'    |'3/13/2013' |108093|'Sales Representative'      | 'Northeast'   | 'USA'   |
++---------+---+------------+----------------------------+--------+------------+------------+------+----------------------------+---------------+---------+
+only showing top 10 rows
+
+
+scala> val df_json_dd = spark.read.json("dept_div.json")
+df_json_dd: org.apache.spark.sql.DataFrame = [company_division: string, department: string]
+
+scala> df_json_dd.show(10, false)
++----------------------+-------------+
+|company_division      |department   |
++----------------------+-------------+
+|'Auto & Hardware'     |'Automotive' |
+|'Domestic'            |'Baby'       |
+|'Domestic'            |'Beauty'     |
+|'Domestic'            |'Clothing'   |
+|'Electronic Equipment'|'Computers'  |
+|'Electronic Equipment'|'Electronics'|
+|'Domestic'            |'Games'      |
+|'Outdoors & Garden'   |'Garden'     |
+|'Domestic'            |'Grocery'    |
+|'Domestic'            |'Health'     |
++----------------------+-------------+
+only showing top 10 rows
+
+
+scala> :quit
+
